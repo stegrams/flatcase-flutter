@@ -158,7 +158,7 @@ flutter config --no-analytics --no-enable-web
 
 # Create a sample if no project exists.
 if [ "$(ls -A)" == ".devcontainer" ]; then
-    flutter create .
+    flutter create --project-name flatcase .
     mkdir .vscode && cp .devcontainer/vscode-launch.json .vscode/launch.json
     sed -i 's/Flutter Demo/Flatcase Demo/' lib/main.dart
 fi
