@@ -1,0 +1,72 @@
+{
+	"name": "Flatcase",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"USER": "flatcazer",
+			// "stable", "beta", "dev", "master", or check https://github.com/flutter/flutter 
+			// for a list of branches and tags.
+			// Flutter developers will release the latest features to the master channel first. 
+			// As these features stabilize, they will first get promoted to the dev channel, 
+			// then to beta, and finally to the stable channel.
+			// A very useful link: https://flutter.dev/docs/development/tools/sdk/releases
+			"FLUTTER_VERSION": "2.2.3",
+		}
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"dart-code.dart-code",
+		"dart-code.flutter"
+	],
+	"settings": {
+		"dart.flutterShowEmulators": "always",
+		// If more than one SDK are installed with FVM (https://fvm.app/docs/guides/basic_commands#install), 
+		// or rebuild Flatcase with a different "FLUTTER_VERSION"; try to choose the project's Flutter SDK
+		// from the status bar where the Flutter version is indicated (this appears when a .dart or the 
+		// pubspec.yaml file is open on the active editor tab) or from the command pallet with 
+		// [Ctrl+Shift+p] "Flutter: Change SDK".
+		// Env variable FVM_HOME is not evaluated by the VSCode, but by the cashed-setup.sh 
+		"dart.flutterSdkPaths": [
+			"$FVM_HOME/versions"
+		],
+		"remote.portsAttributes": {
+			".+": {
+				"onAutoForward": "silent",
+			}
+		}
+	},
+	// If debugging via USB is desirable, follow these steps:
+	// 1. Enable "USB debugging" on your phone.
+	// 2. If the adb is installed on your host, run from a host shell 
+	//    "adb kill-server", a device cannot connect on two adb servers at the
+	//    same time. You may revoke it any time later with "adb start-server".
+	// 3. Connect your phone.
+	// 4. Confirm to "Allow USB debugging?" message on your phone.
+	// 5. Make sure that VSCode reports your phone at the rightmost field of 
+	//    the status bar, instead of "No Device".
+	// If there is no need to run your project on an actual phone, you may
+	// delete or comment out the last three parameters, "--privileged", 
+	// "--volume" and "/dev/bus/usb:/dev/bus/usb", and rebuild.
+	"runArgs": [
+		"--name",
+		"flatcase",
+		"--device",
+		"/dev/kvm:/dev/kvm",
+		"--device",
+		"/dev/dri:/dev/dri",
+		"--volume",
+		"/tmp/.X11-unix:/tmp/.X11-unix",
+		"--env",
+		"DISPLAY",
+		"--net",
+		"host",
+		"--volume",
+		"flatcase-cache:/home/flatcazer/.flatcache",
+		"--privileged",
+		"--volume",
+		"/dev/bus/usb:/dev/bus/usb",
+	],
+	"initializeCommand": "getent group kvm | cut -d: -f3 > .devcontainer/kvm_gid",
+	"onCreateCommand": ".devcontainer/cashed-setup.sh",
+	"remoteUser": "flatcazer"
+}
