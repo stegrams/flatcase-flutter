@@ -35,33 +35,87 @@
 			}
 		}
 	},
-	// If debugging via USB is desirable, follow these steps:
-	// 1. Enable "USB debugging" on your phone.
-	// 2. If the adb is installed on your host, run from a host shell 
-	//    "adb kill-server", a device cannot connect on two adb servers at the
-	//    same time. You may revoke it any time later with "adb start-server".
-	// 3. Connect your phone.
-	// 4. Confirm to "Allow USB debugging?" message on your phone.
-	// 5. Make sure that VSCode reports your phone at the rightmost field of 
-	//    the status bar, instead of "No Device".
-	// If there is no need to run your project on an actual phone, you may
-	// delete or comment out the last three parameters, "--privileged", 
-	// "--volume" and "/dev/bus/usb:/dev/bus/usb", and rebuild.
+
+	// ***runArgs parameter tweaking.
+
+	// Depending on the target device or connection type you prefer to run or 
+	// debug your Flutter project, you may comment out (turn into comments) areas 
+	// of runArgs array that are not relevant. Especially in the case of 
+	// "Wireless debugging" you may leave uncomment only the first four entries
+	// which are the "--name" and "--volume" switches including their values. 
+	// This step is optional and proceed only if you have have security concerns. 
+	// Personally, I don't have on my machine.
+
+	// After each modification, apply "Rebuild Container" for the container to 
+	// run on the new setup. Also, when running on container, make sure that 
+	// VSCode reports your device (except for the AVD case, see next) at the 
+	// rightmost label of the status bar, instead of "No Device".
+
+	// **Enabling AVD (Android Virtual Device aka emulator)
+	// Note that AVDs are not immediately reported from VSCode's status bar. 
+	// They should be launched first. 
+	// This is done by debugging [F5] you project or clicking the "No Device"
+	// label of the status bar, and then selecting from the popped out list one 
+	// of your created emulators, or choose to create a new one which would have 
+	// a default name "flutter_emulator".
+
+	// **Debugging on a physical device
+	// Prerequisite to connect with a hardware device (usually a smartphone), is
+	// that device has enabled "Developer options" (consult you device manual),
+	// and the type of the connection (USB debugging or Wi-Fi "Wireless debugging") 
+	// is enabled too.
+	// Note. Wireless debugging is available only for Android versions 11 and newer.
+
+	// ** Local adb server 
+	// If adb is installed on your local host, run from a local host shell 
+	// "adb kill-server", a physical device cannot connect on two adb servers,
+	// local's and container's, at the same time. 
+	// You may revoke it any time later with "adb start-server".
+
+	// **Enabling USB Debugging.
+	// 1. Connect your phone via USB.
+	// 2. Confirm to "Allow USB debugging?" message on your phone.
+	// 3. Select from the popped up list your phone if it's not already selected.
+	
+	// **Enabling Wi-Fi Debugging.
+	// This procedure consists of two parts, pair and connect:
+	// *Pairing part
+	// Pairing is usually done once for each device, except if you delete
+	// "forget" a pairing device.
+	// -- On the phone's "Developer options".
+	// 1. Tab on the title, not the switch, of the option of "Wireless debugging"
+	//    to open the corresponding screen.
+	// 2. Tab on the option "Pair device with pairing code" and note down the 
+	//    6 digit "Wi-Fi pairing code", the IP address and port in the form of
+	//    <ip>.<an>.<dr>.<ess>:<pairing port>
+	// -- On the VSCode terminal window execute.
+	// 3. adb pair <ip>.<an>.<dr>.<ess>:<pairing port>
+	// 4. Enter pairing code: <Wi-Fi pairing code>
+	// *Connecting part
+	// 5. On the phone's "Wireless debugging" screen, note down the 
+	//    "IP address and port" in the form of <ip>.<an>.<dr>.<ess>:<connecting port>.
+	//    Note that connecting port differs from pairing port.
+	// 6. On the VSCode terminal window execute:
+	// 	  adb connect <ip>.<an>.<dr>.<ess>:<connecting port>
+	// 7. Select from the popped up list your phone if it's not already selected.
+	// If everything have gone well, your device should be listed on available 
+	// devices.
+
 	"runArgs": [
 		"--name",
 		"flatcase",
-		"--device",
-		"/dev/kvm:/dev/kvm",
-		"--device",
-		"/dev/dri:/dev/dri",
-		"--volume",
-		"/tmp/.X11-unix:/tmp/.X11-unix",
-		"--env",
-		"DISPLAY",
-		"--net",
-		"host",
 		"--volume",
 		"flatcase-cache:/home/flatcazer/.flatcache",
+
+		// ** AVD AREA ** comment out theses, if you don't need emulator
+		"--env",
+		"DISPLAY",
+		"--device",
+		"/dev/kvm:/dev/kvm",
+		"--volume",
+		"/tmp/.X11-unix:/tmp/.X11-unix",
+		
+		// ** USB AREA ** comment out theses, if you don't need USB debugging
 		"--privileged",
 		"--volume",
 		"/dev/bus/usb:/dev/bus/usb",
