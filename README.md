@@ -49,10 +49,69 @@ Please don't hesitate to read the content of these files. They contain useful co
 
 If a notification to [Reopen in Container] is not show up, then click to the leftmost side of the VSCode status bar, where a green icon with two arrows is located.
 
-The first time you open in remote container, the process will take some time to complete. In my system, with a download speed of 5 Mbps, took about one hour and a half to connect and about 15 minutes for the first debug [F5] due to a [Flutter issue that downloads an older version of build tools][issue] but uses the latest available.
-After that, the container reopens instantly when you start VSCode, and the Rebuild Container process takes only 21 sec if no new downloads are necessary, and about 40 sec to show up the emulator window with the project's main screen open.
+In case you placed the ```.devcontainer``` to an empty folder, Flatcase Flutter will create a sample project for you, to give you the chance to test your new environment.
 
-In case you placed the ```.devcontainer``` to an empty folder, Flatcase Flutter will create a sample project for you, to give you the opportunity to test your new environment.
+## Initial times (see the next table for a sum up)
+When you first open in remote container, the process will take some time to complete. In my system, with a download speed of 5 Mbps, took about one hour and a half to connect and about 24 minutes for the first debug [F5] due to assembling Gradle stuff (9 mins) and a [Flutter issue that downloads an older version of build tools][issue] (15 mins) but uses the latest available.
+After that, container and emulator reopen almost instantly when you start VSCode, and when rebuilding, container takes only 21 sec to open if no new downloads are necessary, and emulator takes about 1 min 17 sec to show up with the project's main screen open.
+
+### Initial times sum up 
+ When \\\\ To       | Start Container | Debug Project |
+:---------          |   :--------:    |  :---------:  |
+**First Building**  |   1h 30' 00''   |  0h 24' 00''  |
+**Starting VSCode** |   0h 00' 10''   |  0h 00' 32''  |
+**Rebuilding**      |   0h 00' 21''   |  0h 01' 17''  |
+
+## Target devices
+Running and debugging a project, needs a connection with a software (AVD or web-javascript) or hardware (usually a smartphone) device. Especially hardware devices, need to be prepared before starting the debug process. 
+Generally when you start debugging, Flutter will attempt to connect with the device is reported on the rightmost label of the status bar which is usually "No device" or "Web Server (web-javascript)". To prevent that, before debugging, click on that label and from the top popped up list, make the proper choice for your needs. 
+Follows a small how-to for each case of device you may use.
+
+### Web Server (web-javascript)
+Since version 2, web platform became first class citizen in Flutter's stable channel. So, if you don't have any device available, you are probably seeing the "Web Server (web-javascript) reported on the status bar. Though in order to be able to debug your project on Chrome/ium, you have first to install [dart-debug-extension][chrmext] and click on it when asked from the debugger.
+
+### Android Virtual Device (AVD) aka emulator
+Note that AVDs are not immediately reported as connected from VSCode's status bar. They should be launched first. This is done by debugging [F5] your project or clicking the "No Device" label of the status bar, and then selecting from the top popped up list one of your created emulators, or choose to create a new one which would have the default name "flutter_emulator".
+
+### Debugging on a physical device
+Prerequisite to connect with a hardware device (usually a smartphone), is that device has enabled "Developer options" (consult your device manual), and the connection's (USB debugging or Wi-Fi "Wireless debugging") switch is ON, from device's "Developer options". Note. Wireless debugging is available only for Android versions 11 and newer.
+
+### Local adb server 
+If adb is installed on your local host, run from a local host shell ```adb kill-server```, a physical device cannot connect to two adb servers, local's and container's, at the same time. You may revoke it any time later with ```adb start-server```.
+
+### Enabling USB Debugging.
+1. Connect your phone via USB.
+2. Confirm to "Allow USB debugging?" message on your phone.
+3. Select from the VSCode popped up list your phone if it's not already selected.
+
+### Enabling Wi-Fi Debugging.
+This procedure consists of two parts, pair and connect:
+
+#### Pairing part
+Pairing is usually done once for each device, except if you delete
+"forget" a pairing device.
+
+##### On the phone's "Developer options".
+1. Tab on the title, not the switch, of the option of "Wireless debugging"
+   to open the corresponding screen.
+2. Tab on the option "Pair device with pairing code" and note down the 
+   6 digit "Wi-Fi pairing code", the IP address and port in the form of
+   ```<ip>.<an>.<dr>.<ess>:<pairing port>```
+
+##### On the VSCode terminal window execute:
+3. ```adb pair <ip>.<an>.<dr>.<ess>:<pairing port>```
+4. ```Enter pairing code: <Wi-Fi pairing code>```
+
+#### Connecting part
+5. On the phone's "Wireless debugging" screen, note down the 
+   "IP address and port" in the form of ```<ip>.<an>.<dr>.<ess>:<connecting port>```.
+   Note that connecting port differs from pairing port.
+6. On the VSCode terminal window, execute:
+      ```
+      adb connect <ip>.<an>.<dr>.<ess>:<connecting port>
+      ```
+7. Select from the VSCode's top popped up list your phone if it's not already selected.
+If everything have gone well, your device should be listed on available devices.
 
 ## Troubleshooting
 1. #### Q: I see some "Warning: Mapping new ns ..." when the debugger launches the emulator. What to do?
@@ -67,3 +126,4 @@ That's all! Happy coding folks!
 [docker]: https://docs.docker.com/get-docker/
 [issue]: https://github.com/flutter/flutter/issues/83573
 [nvolumes]: https://spin.atomicobject.com/2019/07/11/docker-volumes-explained/
+[chrmext]: https://chrome.google.com/webstore/detail/dart-debug-extension/eljbmlghnomdjgdjmbdekegdkbabckhm

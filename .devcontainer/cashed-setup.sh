@@ -154,10 +154,10 @@ fvm install $FLUTTER_VERSION
 fvm global $FLUTTER_VERSION
 # Gives bash the ability to autocomplete flutter subcommands with tab.
 flutter bash-completion | sudo tee /etc/bash_completion.d/flutter > /dev/null
-flutter config --no-analytics --no-enable-web
+flutter config --no-analytics
 
 # Create a sample if no project exists or just the items of Flatcase Flutter repo.
-if [ "$(ls -A)" == ".devcontainer" -o "$(ls -A | xargs)" == ".devcontainer .git LICENSE README.md" ]; then
+if [ "$(ls -A)" == ".devcontainer" -o "$(ls -A | xargs)" == ".devcontainer .git .gitignore LICENSE README.md" ]; then
     flutter create --project-name flatcase .
     mkdir .vscode && cp .devcontainer/vscode-launch.json .vscode/launch.json
     sed -i 's/Flutter Demo/Flatcase Demo/' lib/main.dart

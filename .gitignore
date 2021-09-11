@@ -1,0 +1,15 @@
+*.log
+.dart_tool
+.idea
+.metadata
+.packages
+.vscode
+android
+build
+flatcase.iml
+ios
+lib
+pubspec.lock
+pubspec.yaml
+test
+web
