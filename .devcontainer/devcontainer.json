@@ -65,14 +65,14 @@
 		"--env",
 		"DISPLAY",
 		"--device",
-		"/dev/kvm:/dev/kvm",
+		"/dev/kvm:/dev/kvm:r",
 		"--volume",
-		"/tmp/.X11-unix:/tmp/.X11-unix",
+		"/tmp/.X11-unix:/tmp/.X11-unix:ro",
 		
 		// ** USB AREA ** comment out theses, if you don't need USB debugging
 		"--privileged",
 		"--volume",
-		"/dev/bus/usb:/dev/bus/usb",
+		"/dev/bus/usb:/dev/bus/usb:ro",
 	],
 	"initializeCommand": "getent group kvm | cut -d: -f3 > .devcontainer/kvm_gid",
 	"onCreateCommand": ".devcontainer/cashed-setup.sh",
